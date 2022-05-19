@@ -75,3 +75,36 @@ int main()
     return 0;
 
 }
+
+/************************************************************************************************************/
+/************************************************************************************************************/
+class Solution
+{
+    public:
+    // MT 1 : ITERATIVE
+    struct Node* reverseList1(struct Node *head)
+    {
+        Node* curr = head, *prev = NULL, *nextp;
+        while(curr) {
+            nextp = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = nextp;
+        }
+        head = prev;
+        return head;
+    }
+    
+    // MT 2 : RECURSION
+    struct Node* reverseList(struct Node *head) {
+        if(!head || !head->next) return head;
+        
+        Node* node = reverseList(head->next);
+        Node* tail = head->next;
+        tail->next = head;
+        head->next = NULL;
+        return node;
+    }
+    
+};
+    

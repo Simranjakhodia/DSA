@@ -1,54 +1,63 @@
-#include<bits/stdc++.h>
+// https://practice.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1
+
+
+// { Driver Code Starts
+#include <bits/stdc++.h>
 using namespace std;
 
-bool isCyclicUtil(vector<int> adj[], vector<int> visited, int curr) {
-    if(visited[curr] == 2) 
-        return true;
-    visited[curr] = 1;
-    bool FLAG = false;
-    for(int i = 0; i < adj[curr].size(); i++){
-        if(visited[adj[curr][i]] == 1)
-            visited[adj[curr][i]] = 2;
-        else 
-            {
-                FLAG = isCyclicUtil(adj[curr], visited, adj[curr][i]);
-                if(FLAG == true)
+ // } Driver Code Ends
+class Solution {
+  public:
+  
+    bool dfs(int node, vector<int>& vis, vector<int> adj[]) {
+        vis[node] = 1;
+        for(auto child : adj[node]){
+            if(vis[child] == 0){ // child not visited yet
+                if(dfs(child, vis, adj))
+                    return true;
+            }        
+            else if(vis[child] == 1) // node is under processing and appeared again
+                return true;
+                
+        }
+        vis[node] = 2;
+        return false;
+    } 
+    
+    bool isCyclic(int v, vector<int> adj[]) {
+        vector<int> vis(v, 0);
+        for(int i = 0; i < v; i++){
+            if(vis[i] == 0) {
+                if(dfs(i, vis, adj))
                     return true;
             }
-    }
-    return false;
-}
-
-bool isCyclic(vector<int> adj[], int v) {
-    vector<int> visited(v, 0);
-    bool FLAG = false;
-    for(int i = 0; i < v; i++){
-        visited[i] = 1;
-        for(int j = 0; j < adj[i].size(); j++) {
-            FLAG = isCyclicUtil(adj, viisted, adj[i]);
-            if(FLAG == true) 
-                return true;
         }
-        visited[i] = 0;
-    } 
-    return false;
-}
+        return false;
+    }
+};
 
-int main(){
-    int T;   // no of testcase
-    cin >> T;
-    while(T--) {
+// { Driver Code Starts.
+
+int main() {
+
+    int t;
+    cin >> t;
+    while (t--) {
         int V, E;
         cin >> V >> E;
-        
+
         vector<int> adj[V];
-        int u, v;
-        for(int i = 0; i < E; i++) {
+
+        for (int i = 0; i < E; i++) {
+            int u, v;
             cin >> u >> v;
             adj[u].push_back(v);
-            adj[v].push_back(u);
         }
-        cout << isCyclic(adj, V) << endl;
+
+        Solution obj;
+        cout << obj.isCyclic(V, adj) << "\n";
     }
+
     return 0;
 }
+  // } Driver Code Ends

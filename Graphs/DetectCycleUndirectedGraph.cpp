@@ -1,5 +1,4 @@
-// https://practice.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1
-
+//  https://practice.geeksforgeeks.org/problems/detect-cycle-in-an-undirected-graph/1
 
 // { Driver Code Starts
 #include <bits/stdc++.h>
@@ -8,56 +7,48 @@ using namespace std;
  // } Driver Code Ends
 class Solution {
   public:
-  
-    bool dfs(int node, vector<int>& vis, vector<int> adj[]) {
-        vis[node] = 1;
-        for(auto child : adj[node]){
-            if(vis[child] == 0){ // child not visited yet
-                if(dfs(child, vis, adj))
-                    return true;
-            }        
-            else if(vis[child] == 1) // node is under processing and appeared again
+    // Function to detect cycle in an undirected graph.
+    bool dfs(int i, int parent, vector<int> adj[], vector<int>& vis) {
+        vis[i] = true;
+        for(auto node : adj[i]) {
+            if(!vis[node]){
+                if(dfs(node, i,adj, vis))
+                return true;}
+            else if(node != parent) 
                 return true;
-                
         }
-        vis[node] = 2;
         return false;
     } 
-    
-    bool isCyclic(int v, vector<int> adj[]) {
-        vector<int> vis(v, 0);
-        for(int i = 0; i < v; i++){
-            if(vis[i] == 0) {
-                if(dfs(i, vis, adj))
-                    return true;
-            }
+    bool isCycle(int v, vector<int> adj[]) {
+        vector<int> vis(v+1, 0);
+        for(int i = 0; i < v; i++) {
+            if(!vis[i] && dfs(i, -1 ,adj, vis))
+                return true;
         }
         return false;
     }
 };
 
 // { Driver Code Starts.
-
 int main() {
-
-    int t;
-    cin >> t;
-    while (t--) {
+    int tc;
+    cin >> tc;
+    while (tc--) {
         int V, E;
         cin >> V >> E;
-
         vector<int> adj[V];
-
         for (int i = 0; i < E; i++) {
             int u, v;
             cin >> u >> v;
             adj[u].push_back(v);
+            adj[v].push_back(u);
         }
-
         Solution obj;
-        cout << obj.isCyclic(V, adj) << "\n";
+        bool ans = obj.isCycle(V, adj);
+        if (ans)
+            cout << "1\n";
+        else
+            cout << "0\n";
     }
-
     return 0;
-}
-  // } Driver Code Ends
+}  // } Driver Code Ends
